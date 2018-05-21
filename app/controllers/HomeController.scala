@@ -9,13 +9,14 @@ import play.api.data.validation.Constraints._
 import models.LoginData
 import play.api.Logger
 import scala.collection.immutable.HashMap
+import play.api.db._
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) with play.api.i18n.I18nSupport{
+class HomeController @Inject()(db: Database, cc: ControllerComponents) extends AbstractController(cc) with play.api.i18n.I18nSupport{
 
   var users = new HashMap[String,String]()
   
@@ -58,6 +59,7 @@ def check(email: String, password: String) = {
    */
   def index() = Action { implicit request: Request[AnyContent] =>
    Logger.debug("logger working test")
+   Logger.debug(db.getConnection().toString())
     Ok(views.html.index())
   }
     

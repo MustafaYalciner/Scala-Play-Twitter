@@ -11,10 +11,9 @@ libraryDependencies += guice
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
 resolvers += Resolver.sonatypeRepo("snapshots")
 
-libraryDependencies ++= Seq(
-  jdbc,
-  "org.playframework.anorm" %% "anorm" % "2.6.2"
-)
+libraryDependencies += jdbc
+libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.41"
+libraryDependencies += "com.h2database" % "h2" % "1.4.192"
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.tu.controllers._"

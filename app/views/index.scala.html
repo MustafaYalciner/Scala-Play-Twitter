@@ -1,5 +1,10 @@
 @()
 
-@main("Welcome to Play") {
+@main("Twitter") {
   <h1>Welcome to Play!</h1>
+  <p>Please login or sign up to get full access to twitter</p>
+  <ul>
+  	<li><a href="@routes.HomeController.login">login</a></li>
+  	<li><a href="@routes.HomeController.signup">signup</a>  </li>
+  </ul>
 }

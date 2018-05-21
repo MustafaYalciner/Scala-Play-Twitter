@@ -1,0 +1,13 @@
+@* login Template File *@
+@(form:Form[(String,String)])(implicit flash:Flash, messagesProvider: MessagesProvider)
+
+@main("Twitter"){
+<h1> login </h1>
+
+
+@helper.form(action= routes.HomeController.authenticate) {
+       @helper.inputText(form("email"))
+       @helper.inputPassword(form("password"))
+       <button type="submit">login</button>
+        }
+}

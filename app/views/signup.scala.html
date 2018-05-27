@@ -1,11 +1,13 @@
 @* signup Template File *@
-@(form:Form[(String,String,String)])(implicit flash:Flash, messagesProvider: MessagesProvider)
+@(form:Form[(String,String)])(implicit flash:Flash, messagesProvider: MessagesProvider)
 
 @main("Twitter"){
 <h1> signup </h1>
-@helper.form(action= routes.HomeController.addUser) {
+@if(form.hasGlobalErrors){
+	<p>Could not create an account with the given data.</p>
+}
+@helper.form(action= routes.SessionController.addUser) {
        @helper.inputText(form("email"))
-       @helper.inputText(form("age"))
        @helper.inputPassword(form("password"))
        <button type="submit">signup</button>
         }

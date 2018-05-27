@@ -1,10 +1,20 @@
-@()
+@()(implicit session: play.api.mvc.Session)
 
 @main("Twitter") {
-  <h1>Welcome to Play!</h1>
-  <p>Please login or sign up to get full access to twitter</p>
-  <ul>
-  	<li><a href="@routes.HomeController.login">login</a></li>
-  	<li><a href="@routes.HomeController.signup">signup</a>  </li>
-  </ul>
+	<h1>Welcome to Play!</h1>
+	@if(session.get("email").isDefined){
+		<ul>
+			<li><a href="@routes.SessionController.logout"> logout </a></li>
+  			<li><a href="@routes.HomeController.home">home</a></li>
+			<!-- TODO: goto profile -->
+		</ul>
+	
+	} else {
+		<p>Please login or sign up to get full access to twitter</p>
+   		<ul>
+  			<li><a href="@routes.SessionController.login">login</a></li>
+  			<li><a href="@routes.SessionController.signup">signup</a></li>
+	  </ul>
+	}
+	
 }

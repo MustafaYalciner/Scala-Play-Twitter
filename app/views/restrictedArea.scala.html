@@ -1,7 +1,0 @@
-@* restrictedArea Template File *@
-@()(implicit session: play.api.mvc.Session)
-
-@main("twitter- restricted"){
-	<h1>Restricted AREA</h1>
-	<p>@session.get("email").getOrElse("nah")</p>
-}

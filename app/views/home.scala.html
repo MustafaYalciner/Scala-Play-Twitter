@@ -1,0 +1,7 @@
+@* home Template File *@
+@()(implicit session: play.api.mvc.Session)
+
+@main("Twitter - Home"){
+	<h1>Your Twitter</h1>
+	<p>You are signed in as: @session.get("email").get</p>
+}

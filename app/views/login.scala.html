@@ -3,9 +3,11 @@
 
 @main("Twitter"){
 <h1> login </h1>
+@if(form.hasGlobalErrors){
+	<p>Could not login with the given data.</p>
+}
 
-
-@helper.form(action= routes.HomeController.authenticate) {
+@helper.form(action= routes.SessionController.authenticate) {
        @helper.inputText(form("email"))
        @helper.inputPassword(form("password"))
        <button type="submit">login</button>

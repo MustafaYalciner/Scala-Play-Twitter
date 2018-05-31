@@ -1,0 +1,13 @@
+@* tweetViewer Template File *@
+@(tweet : Tweet)
+
+<article>
+	<h1>@tweet.emailAuthor</h1>
+	<p>@tweet.content</p>
+	<p>@tweet.date</p>
+	<hr>
+	@if(tweet.reTweet.isDefined){
+	<p>Retweets: </p>
+	@tweetViewer(tweet.reTweet.get)
+	}
+</article>

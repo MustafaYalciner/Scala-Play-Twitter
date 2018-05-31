@@ -1,7 +1,21 @@
 @* home Template File *@
-@()(implicit session: play.api.mvc.Session)
+@(newsTweets:List[Tweet], profile:User )(implicit session: play.api.mvc.Session)
 
 @main("Twitter - Home"){
 	<h1>Your Twitter</h1>
 	<p>You are signed in as: @session.get("email").get</p>
+	<p>Your Newsfeed: </p>
+	@for(tweet <- newsTweets){
+	@tweetViewer(tweet)
+	}
+}{
+<h4>Your profile:</h4>
+<p>email: @profile.email</p>
+@if(profile.age.isDefined){
+	<p>age: @profile.age.get </p>
+}
+@if(profile.description.isDefined){
+	<p>age: @profile.description.get </p>
+}
+
 }

@@ -11,7 +11,7 @@ case class User (email: String, password: String, age: Option[Int] = Option.empt
 class UserManager @Inject() (){
   
    implicit def toOption[E](value : E) = Some(value)
-   var users = List[User](User("email1@gmx.de","pw1"),User("email2@gmx.de","pw2"),User("email3@gmx.de","pw3"))
+   var users = List[User](User("email1@gmx.de","pw1",23,"adsfdescription"),User("email2@gmx.de","pw2"),User("email3@gmx.de","pw3"))
    
   def loginUser(email: String, password:String) : Option[User] = {
      for(user <- users if(user.email.equals(email)&&user.password.equals(password)))
@@ -21,7 +21,10 @@ class UserManager @Inject() (){
      
      return null//returns optional.empty because of our implicit
   }
-   
+  
+   def getUserByEmail(email:String) : Option[User] = {
+     return users.find(user=>user.email.equals(email))
+   }
    
   def signUp(email: String, password: String): Option[User] = {
     if(password.isEmpty()){

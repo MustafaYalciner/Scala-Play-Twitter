@@ -58,6 +58,8 @@ val signupForm = Form(
     
   }
  
+
+ 
  def addUser = Action { implicit request =>
    Logger.debug("addUser method")
    signupForm.bindFromRequest.fold(

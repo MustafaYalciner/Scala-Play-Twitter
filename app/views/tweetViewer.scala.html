@@ -2,12 +2,13 @@
 @(tweet : Tweet)
 
 <article>
-	<h1>@tweet.emailAuthor</h1>
+	<h6>@tweet.emailAuthor</h6>
 	<p>@tweet.content</p>
 	<p>@tweet.date</p>
+	<a href="@routes.HomeController.retweet(String.valueOf(tweet.tweetID))">retweet</a>
 	<hr>
 	@if(tweet.reTweet.isDefined){
 	<p>Retweets: </p>
-	@tweetViewer(tweet.reTweet.get)
+	<blockquote>@tweetViewer(tweet.reTweet.get)</blockquote>
 	}
 </article>

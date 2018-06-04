@@ -17,6 +17,14 @@ POST	/signup						controllers.SessionController.addUser
 
 POST    /login                      controllers.SessionController.authenticate
 
-GET 	/home						controllers.HomeController.home()
+GET 	/home						controllers.HomeController.home
 
-GET 	/logout						controllers.SessionController.logout()
+GET 	/logout						controllers.SessionController.logout
+
+GET 	/retweetPage:originTweetId  controllers.HomeController.retweet(originTweetId)
+
+GET 	/tweetPage					controllers.HomeController.tweet
+
+POST 	/retweet:originTweetId		controllers.HomeController.tweetPost(originTweetId)
+
+POST 	/retweet2					controllers.HomeController.tweetPost2()

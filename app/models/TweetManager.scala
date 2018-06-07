@@ -8,7 +8,7 @@ import java.util.Calendar
 case class Tweet(tweetID: Int, emailAuthor:String, content:String, date:Date, reTweet: Option[Tweet])
 
 @Singleton
-class TweetManager @Inject() (){
+class TweetManager @Inject() (userManager:UserManager){
   
   val tweet1 = Tweet(1,"email1@gmx.de","contentcontent",new Date(2018,5,29),Option.empty)
   val tweet2 = Tweet(2,"email2@gmx.de","content2 asdfsadfsadfsaf sadf",new Date(2018,5,27),Option.apply(tweet1))
@@ -18,7 +18,7 @@ class TweetManager @Inject() (){
   
   private var tweets = List[Tweet](tweet1,tweet2,tweet3,tweet4)
   
-  var follows = List[Tuple2[String,String]](new Tuple2("email1@gmx.de","email2@gmx.de"))
+  var followsdb = List[Tuple2[String,String]](new Tuple2("email1@gmx.de","email2@gmx.de"))
 
   /**
    * Gets all news tweets (TODO: only the latest 10)
@@ -29,6 +29,12 @@ class TweetManager @Inject() (){
     return tweets;
   }
   
+  def follow(follows:String,toFollow:String){
+    if(!followsdb.exists(p=>p._1.equals(follows)&&p._2.equals(toFollow))){
+      followsdb=followsdb.::(Tuple2(follows,toFollow));
+    }
+  }
+  
   def getTweetById(tweetId : Int) : Option[Tweet] ={
     //TODO log if more than one tweet can by found with the given id.
     return tweets.find(tweet=> tweet.tweetID.equals(tweetId))
@@ -37,6 +43,23 @@ class TweetManager @Inject() (){
   def addTweet(content:String, author:String, retweet: Option[Tweet]){
     tweets = tweets.::(Tweet(tweets.length,author, content, Calendar.getInstance.getTime(),retweet))
   }
+  
+  def getUsersThatYouFollow(you: String):List[User]={
+    followsdb
+    .filter(p=>p._1.equals(you))
+    .map(f=>userManager.getUserByEmail(f._2))
+    .filter(opt=>opt.isDefined)
+    .map(opt=>opt.get)
+  }
+  def getUsersThatFollowYou(you: String):List[User]={
+    followsdb
+    .filter(p=>p._2.equals(you))
+    .map(f=>userManager.getUserByEmail(f._1))
+    .filter(opt=>opt.isDefined)
+    .map(opt=>opt.get)
+  }
+  
+  
   
   
   /**

@@ -1,0 +1,36 @@
+@* followPage Template File *@
+@(allUsers:List[User], youFollow: List[User], followingYou: List[User])(implicit session: play.api.mvc.Session)
+@main("Twitter"){
+	<h6>Users whom you follow</h6>
+	<ul>
+		@for(user<-youFollow){
+			<li>@user.email - @user.description</li>
+		}
+	</ul>
+	<h6>Users who are following you</h6>
+	<ul>
+		@for(user<-followingYou){
+			<li>@user.email 
+			@helper.form(action=routes.ProfileController.followUser(user.email)) {
+       		<button type="submit">follow now</button>
+        }
+			</li>
+		}
+	</ul>
+	<h6>List of all Users</h6> 
+	<ul>
+		@for(user<-allUsers){
+			<li>@user.email 
+			@helper.form(action=routes.ProfileController.followUser(user.email)) {
+       		<button type="submit">follow now</button>
+        	}
+       		</li>
+		}
+	</ul>
+
+}{
+	<h4>You are logged in as: </h4>
+	<p>email: @session.get("email").get</p>
+	<hr>
+	<hr>
+}

@@ -17,6 +17,10 @@ libraryDependencies += "com.h2database" % "h2" % "1.4.192"
 libraryDependencies ++= Seq(
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
 )
+//libraryDependencies ++= Seq(
+//  jdbc,
+//  "org.playframework.anorm" %% "anorm" % "2.6.2"
+//)
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.tu.controllers._"
 

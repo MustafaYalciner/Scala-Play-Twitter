@@ -27,4 +27,8 @@ GET 	/tweetPage					controllers.HomeController.tweet
 
 POST 	/retweet:originTweetId		controllers.HomeController.tweetPost(originTweetId)
 
-POST 	/retweet2					controllers.HomeController.tweetPost2()
+POST 	/retweet2					controllers.HomeController.tweetPost2
+
+POST	/followUser:toFollow		controllers.ProfileController.followUser(toFollow)
+
+GET		/yourFollows				controllers.ProfileController.yourFollows

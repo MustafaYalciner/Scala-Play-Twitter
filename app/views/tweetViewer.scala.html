@@ -5,7 +5,7 @@
 	<h6>@tweet.emailAuthor</h6>
 	<p>@tweet.content</p>
 	<p>@tweet.date</p>
-	<a href="@routes.HomeController.retweet(String.valueOf(tweet.tweetID))">retweet</a>
+	<a class="btn btn-primary" href="@routes.HomeController.retweet(String.valueOf(tweet.tweetID))">retweet</a>
 	<hr>
 	@if(tweet.reTweet.isDefined){
 	<p>Retweets: </p>

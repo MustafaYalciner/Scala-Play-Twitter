@@ -1,7 +1,7 @@
 @()(implicit session: play.api.mvc.Session)
 
 @main("Twitter") {
-	<h1>Welcome to Play!</h1>
+	<h1>Welcome to Twitter!</h1>
 	@if(session.get("email").isDefined){
 		<ul>
 			<li><a href="@routes.SessionController.logout"> logout </a></li>

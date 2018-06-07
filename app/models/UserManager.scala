@@ -4,11 +4,11 @@ package models
 import javax.inject._
 import play.api.Logger
 import scala.collection.immutable.HashMap
-
+import play.api.db._
 case class User (email: String, password: String, age: Option[Int] = Option.empty, description: Option[String] = Option.empty)
 
 @Singleton
-class UserManager @Inject()(){
+class UserManager @Inject()(db: Database){
   
 
    implicit def toOption[E](value : E) = Some(value)
@@ -21,7 +21,13 @@ class UserManager @Inject()(){
 //      val result: Boolean = SQL("Select * from test").execute()
 //      Logger.debug(String.valueOf(result))
 //      }
-     
+      
+   Logger.debug("Connection to database"+db.getConnection().toString())
+     val connection = db.getConnection()
+     val statement = connection.createStatement()
+     val query = "SELECT * FROM TEST"
+     val resultset = statement.executeQuery(query)
+     Logger.debug(resultset.toString())
      for(user <- users if(user.email.equals(email)&&user.password.equals(password)))
      {
       return user//works because of our implicit toOption definition

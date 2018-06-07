@@ -53,7 +53,7 @@ val signupForm = Form(
    Logger.debug("authentication method")
    loginForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.login(formWithErrors)),
-      user => Redirect(routes.HomeController.home()).withSession("email" -> user._1)
+      user => Redirect(routes.HomeController.index()).withSession("email" -> user._1)
         )
     
   }
@@ -64,7 +64,7 @@ val signupForm = Form(
    Logger.debug("addUser method")
    signupForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.signup(formWithErrors)),
-      user => Redirect(routes.HomeController.home()).withSession("email" -> user._1)
+      user => Redirect(routes.HomeController.index()).withSession("email" -> user._1)
         )
     
   }

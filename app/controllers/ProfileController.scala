@@ -23,7 +23,7 @@ with play.api.i18n.I18nSupport{
   def yourFollows() = Action { implicit request: Request[AnyContent] =>
     val sessionMail = request.session.get("email")
     if(sessionMail.isDefined){
-    Ok(views.html.followPage(userManager.users,
+    Ok(views.html.followPage(userManager.allUsers(),
         tweetManager.getUsersThatYouFollow(sessionMail.get),
         tweetManager.getUsersThatFollowYou(sessionMail.get)))
     }

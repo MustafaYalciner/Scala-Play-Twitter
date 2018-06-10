@@ -6,7 +6,7 @@
 		<p>Could not retweet.</p>
 	}else{
 	@if(reTweet.isEmpty){
-       @helper.form(action= routes.HomeController.tweetPost2) {
+       @helper.form(action= routes.HomeController.tweetPosttest) {
        @helper.inputText(form("content"))
        <button type="submit">tweet</button>
         }
@@ -23,6 +23,6 @@
         
         
 }{
-
+<a class="btn btn-primary" href="@routes.HomeController.index">Back</a>
 }
 

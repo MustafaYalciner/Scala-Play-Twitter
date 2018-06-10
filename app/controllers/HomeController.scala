@@ -96,7 +96,7 @@ with play.api.i18n.I18nSupport{
         )
   }
   
-  def tweetPost2() = Action { implicit request =>
+  def tweetPosttest() = Action { implicit request =>
    if(request.session.get("email").isEmpty){
    Logger.debug("email empty")
      Redirect(routes.HomeController.index())

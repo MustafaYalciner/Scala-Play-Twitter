@@ -42,4 +42,14 @@ with play.api.i18n.I18nSupport{
       Redirect(routes.HomeController.index())
     }
   }
+  def unfollowUser(userMailToUnfollow: String)= Action { implicit request: Request[AnyContent] =>
+    val optMail = request.session.get("email")
+    if(optMail.isDefined){
+      tweetManager.unfollow(optMail.get, userMailToUnfollow);
+      Redirect(routes.ProfileController.yourFollows())
+    }
+    else{
+      Redirect(routes.HomeController.index())
+    }
+  }
 }

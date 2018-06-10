@@ -4,72 +4,142 @@ import java.util.Date
 import java.util.HashMap
 import scala.Tuple1
 import java.util.Calendar
+import play.api.db._
+import play.Logger
 
-case class Tweet(tweetID: Int, emailAuthor:String, content:String, date:Date, reTweet: Option[Tweet])
+case class Tweet(tweetID: Int, emailAuthor:String, content:String, date:String, reTweet: Option[Tweet])
 
 @Singleton
-class TweetManager @Inject() (userManager:UserManager){
-  
-  val tweet1 = Tweet(1,"email1@gmx.de","contentcontent",new Date(2018,5,29),Option.empty)
-  val tweet2 = Tweet(2,"email2@gmx.de","content2 asdfsadfsadfsaf sadf",new Date(2018,5,27),Option.apply(tweet1))
-  val tweet3 = Tweet(3,"email2@gmx.de","content3 asdfsffffffffffffffadf",new Date(2018,5,27),Option.apply(tweet2))
-  val tweet4 = Tweet(4,"email2@gmx.de","content4 asdaaaaaaaaaaaaaaadfsaf sadf",new Date(2018,5,27),Option.apply(tweet3))
+class TweetManager @Inject() (userManager:UserManager, db: Database){
   
   
-  private var tweets = List[Tweet](tweet1,tweet2,tweet3,tweet4)
   
-  var followsdb = List[Tuple2[String,String]](new Tuple2("email1@gmx.de","email2@gmx.de"))
+ // private var tweets = List[Tweet](tweet1,tweet2,tweet3,tweet4)
+  
+//  var followsdb = List[Tuple2[String,String]](new Tuple2("email1@gmx.de","email2@gmx.de"))
 
   /**
    * Gets all news tweets (TODO: only the latest 10)
    */
   def getNewsFeed(userMail: String) : List[Tweet]={
+    var feedTweets = List[Tweet]()
+     val resultset = userManager.runMyQuery(
+       s"""
+       Select id as sqlid, author as sqlauthor, content as sqlcontent, date as sqldate, retweet as sqlretweet from tweets
+       join follows on follows.followee = tweets.author
+       where follows.follower='$userMail'
+       union
+       Select id as sqlid, author as sqlauthor, content as sqlcontent, date as sqldate, retweet as sqlretweet from tweets
+       where tweets.author='$userMail'
+       """)
+     while(resultset.next){
+       val tweetid = resultset.getInt("sqlid");
+       val authorMail = resultset.getString("sqlauthor");
+       val content= resultset.getString("sqlcontent");
+       val date = resultset.getString("sqldate");
+       val retweet = resultset.getInt("sqlretweet");
+       feedTweets = feedTweets.::(Tweet(tweetid, authorMail, content, date, getTweetChain(retweet)));
+    }
     //val allFollowedUsers = follows.filter(p=>p._1.equals(userMail)).map(tup => tup._2)
     //return tweets.filter(tweet=> allFollowedUsers.contains(tweet.emailAuthor))
-    return tweets;
+    return feedTweets;
+  }
+  
+  def getTweetChain(tweetID : Int) : Option[Tweet]={
+    if(tweetID==null || tweetID.equals("NULL")){
+      return Option.empty;
+    }
+    val resultset = userManager.runMyQuery(
+       s"""
+       Select author as sqlauthor, content as sqlcontent, date as sqldate, retweet as sqlretweet from tweets
+       where tweets.id = '$tweetID'
+       """)
+       resultset.last();
+    if(resultset.getRow() <1){
+       return Option.empty
+     }
+    val authorMail = resultset.getString("sqlauthor");
+    val content= resultset.getString("sqlcontent");
+    val date = resultset.getString("sqldate");
+    val retweet = resultset.getInt("sqlretweet");
+    return Option.apply(Tweet(tweetID, authorMail, content, date,getTweetChain(retweet)));
+    
   }
   
   def follow(follows:String,toFollow:String){
-    if(!followsdb.exists(p=>p._1.equals(follows)&&p._2.equals(toFollow))){
-      followsdb=followsdb.::(Tuple2(follows,toFollow));
-    }
+     val resultset = userManager.runMyQuery(
+       s"""
+       Select * from follows
+       where follows.follower='follows' and  follows.followee='$toFollow'
+       """)
+    resultset.last();
+     if(resultset.getRow() <1){
+       userManager.runMyUpdate(s"""
+       Insert into follows(follower, followee)
+       values('$follows', '$toFollow')
+       """)
+     }
   }
-  
+    def unfollow(follows:String,toUnfollow:String){
+     val resultset = userManager.runMyQuery(
+       s"""
+       Select * from follows
+       where follows.follower='follows' and  follows.followee='$toUnfollow'
+       """)
+    resultset.last();
+     if(resultset.getRow() == 1){
+
+       userManager.runMyUpdate(s"""
+       delete from follows
+       where follows.follower = '$follows' and follows.followee='$toUnfollow'
+       """)
+     }
+  }
   def getTweetById(tweetId : Int) : Option[Tweet] ={
-    //TODO log if more than one tweet can by found with the given id.
-    return tweets.find(tweet=> tweet.tweetID.equals(tweetId))
+    getTweetChain(tweetId);
   }
   
   def addTweet(content:String, author:String, retweet: Option[Tweet]){
-    tweets = tweets.::(Tweet(tweets.length,author, content, Calendar.getInstance.getTime(),retweet))
+    if(retweet.isDefined){
+    var retweetId : Int = retweet.get.tweetID;
+    Logger.debug("nonempty retweet : "+ retweetId)
+    userManager.runMyUpdate(s"""
+      insert into  tweets (author, content, date, retweet)
+      values ('$author', '$content', CURRENT_TIMESTAMP,'$retweetId')
+      """)
+    }
+    else{
+      Logger.debug("empty retweet .. ")
+    userManager.runMyUpdate(s"""
+      insert into  tweets (author, content, date, retweet)
+      values ('$author', '$content', CURRENT_TIMESTAMP, NULL)
+      """)
+    }
+  }
+  
+  def getUsersThatFollowYou(you: String):List[User]={
+    var followers = List[String]();
+    val resultSet = userManager.runMyQuery(s"""
+      Select follower as sqlfollower from follows
+      where follows.followee='$you'
+      """)
+      while(resultSet.next)
+      {
+        followers = followers.::(resultSet.getString("sqlfollower"));
+      }
+    followers.map(mail => userManager.getUserByEmail(mail)).filter(p => p.isDefined).map(p=>p.get);
   }
   
   def getUsersThatYouFollow(you: String):List[User]={
-    followsdb
-    .filter(p=>p._1.equals(you))
-    .map(f=>userManager.getUserByEmail(f._2))
-    .filter(opt=>opt.isDefined)
-    .map(opt=>opt.get)
-  }
-  def getUsersThatFollowYou(you: String):List[User]={
-    followsdb
-    .filter(p=>p._2.equals(you))
-    .map(f=>userManager.getUserByEmail(f._1))
-    .filter(opt=>opt.isDefined)
-    .map(opt=>opt.get)
-  }
-  
-  
-  
-  
-  /**
-   * funktionen, die gewährleistet werden müsse:
-   * -newsfeed eines nutzers zurückgeben:
-   * 		-liste derjedigen, die aboniert wurden -> deren tweets
-   * -zuordnung von nutzer zu tweets.
-   * -tweets hinzufügen
-   * -
-   */
-  
-  
+    var followers = List[String]();
+    val resultSet = userManager.runMyQuery(s"""
+      Select followee as sqlfollowee from follows
+      where follows.follower='$you'
+      """)
+      while(resultSet.next)
+      {
+        followers = followers.::(resultSet.getString("sqlfollowee"));
+      }
+    followers.map(mail => userManager.getUserByEmail(mail)).filter(p => p.isDefined).map(p=>p.get);
+  }  
 }

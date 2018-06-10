@@ -5,6 +5,9 @@
 	<ul>
 		@for(user<-youFollow){
 			<li>@user.email - @user.description</li>
+			@helper.form(action=routes.ProfileController.unfollowUser(user.email)) {
+       		<button class="btn btn-primary" type="submit">unfollow now</button>
+        	}
 		}
 	</ul>
 	<h6>Users who are following you</h6>
@@ -12,7 +15,7 @@
 		@for(user<-followingYou){
 			<li>@user.email 
 			@helper.form(action=routes.ProfileController.followUser(user.email)) {
-       		<button type="submit">follow now</button>
+       		<button class="btn btn-primary" type="submit">follow now</button>
         }
 			</li>
 		}
@@ -22,13 +25,14 @@
 		@for(user<-allUsers){
 			<li>@user.email 
 			@helper.form(action=routes.ProfileController.followUser(user.email)) {
-       		<button type="submit">follow now</button>
+       		<button class="btn btn-primary" type="submit">follow now</button>
         	}
        		</li>
 		}
 	</ul>
 
 }{
+	<a class="btn btn-primary" href="@routes.HomeController.index">Back</a>
 	<h4>You are logged in as: </h4>
 	<p>email: @session.get("email").get</p>
 	<hr>

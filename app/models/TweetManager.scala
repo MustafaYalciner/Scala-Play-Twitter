@@ -81,13 +81,16 @@ class TweetManager @Inject() (userManager:UserManager, db: Database){
      }
   }
     def unfollow(follows:String,toUnfollow:String){
+      Logger.debug("unfollow with "+ follows+""+ toUnfollow);
      val resultset = userManager.runMyQuery(
        s"""
        Select * from follows
-       where follows.follower='follows' and  follows.followee='$toUnfollow'
+       where follows.follower='$follows' and  follows.followee='$toUnfollow'
        """)
-    resultset.last();
+       resultset.last();
+     Logger.debug(""+resultset.getRow());
      if(resultset.getRow() == 1){
+      Logger.debug("deleting row "+ follows, toUnfollow);
 
        userManager.runMyUpdate(s"""
        delete from follows

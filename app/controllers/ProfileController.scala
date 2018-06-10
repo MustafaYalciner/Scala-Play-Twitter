@@ -43,6 +43,7 @@ with play.api.i18n.I18nSupport{
     }
   }
   def unfollowUser(userMailToUnfollow: String)= Action { implicit request: Request[AnyContent] =>
+    Logger.debug("Usermail to unfollow"+userMailToUnfollow)
     val optMail = request.session.get("email")
     if(optMail.isDefined){
       tweetManager.unfollow(optMail.get, userMailToUnfollow);

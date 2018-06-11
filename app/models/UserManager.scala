@@ -31,7 +31,6 @@ class UserManager @Inject()(db: Database){
        val password = resultset.getString("sqlpassword");
        val age = resultset.getInt("sqlage");
        val description = resultset.getString("sqldescription");
-       Logger.debug("email for found loginstuff  "+email)
        return User(email, password, age, description);
      }
   }
@@ -52,7 +51,6 @@ class UserManager @Inject()(db: Database){
        val password = resultset.getString("sqlpassword");
        val age = resultset.getInt("sqlage");
        val description = resultset.getString("sqldescription");
-       Logger.debug("email for found loginstuff  "+email)
        return User(email, password, age, description);
      }
     // return users.find(user=>user.email.equals(email))
@@ -74,10 +72,10 @@ class UserManager @Inject()(db: Database){
     val resultset = runMyQuery(s"SELECT EMAIL as sqlemail, PASSWORD as sqlpassword, AGE as sqlage, DESCRIPTION as sqldescription FROM USERS")
     while(resultset.next){
       val email = resultset.getString("sqlemail");
-       val password = resultset.getString("sqlpassword");
-       val age = resultset.getInt("sqlage");
-       val description = resultset.getString("sqldescription");
-       allUsers = allUsers.::(User(email, password, age, description));
+      val password = resultset.getString("sqlpassword");
+      val age = resultset.getInt("sqlage");
+      val description = resultset.getString("sqldescription");
+      allUsers = allUsers.::(User(email, password, age, description));
     }
     return allUsers;
   }

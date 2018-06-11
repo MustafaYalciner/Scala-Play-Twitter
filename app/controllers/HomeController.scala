@@ -83,14 +83,11 @@ with play.api.i18n.I18nSupport{
       }
     }
    if(request.session.get("email").isEmpty){
-   Logger.debug("email empty")
      Redirect(routes.HomeController.index())
    }
-   Logger.debug("Retweet post")
    tweetForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.retweetPage(formWithErrors,Option.empty)),
       createTweet => {
-   Logger.debug("add tweet")
         tweetManager.addTweet(createTweet.content,request.session.get("email").get,retweet)
       Redirect(routes.HomeController.index())}
         )
@@ -98,14 +95,11 @@ with play.api.i18n.I18nSupport{
   
   def tweetPosttest() = Action { implicit request =>
    if(request.session.get("email").isEmpty){
-   Logger.debug("email empty")
      Redirect(routes.HomeController.index())
    }
-   Logger.debug("Retweet post")
    tweetForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.retweetPage(formWithErrors,Option.empty)),
       createTweet => {
-   Logger.debug("add tweet")
         tweetManager.addTweet(createTweet.content,request.session.get("email").get,Option.empty)
       Redirect(routes.HomeController.index())}
         )

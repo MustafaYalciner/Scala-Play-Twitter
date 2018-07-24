@@ -20,11 +20,11 @@ class UserManager @Inject()(db: Database){
      //find out the rowcount
      resultset.last();
      if(resultset.getRow() <1){
-       return Option.empty
+       return null;
      }
      else if(resultset.getRow()>1){
        Logger.debug("apparently email is not primary key in database, an email request returned more than one result.")
-       return Option.empty;
+       return null;
      }
      else{
        val email = resultset.getString("sqlemail");

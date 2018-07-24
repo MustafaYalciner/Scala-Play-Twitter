@@ -69,7 +69,7 @@ with play.api.i18n.I18nSupport{
       Ok(views.html.retweetPage(tweetForm,Option.empty))
     }
     else{
-    Redirect(routes.HomeController.index())
+    Redirect(routes.HomeController.home())
     }
   }
   

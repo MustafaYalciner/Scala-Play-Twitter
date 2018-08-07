@@ -11,9 +11,8 @@ case class User (email: String, password: String, age: Option[Int] = Option.empt
 
 @Singleton
 class UserManager @Inject()(db: Database){
-   implicit def toOption[E](value : E) = Some(value)
+   implicit def toOption[E](value : E) = if(value==null) None else Some(value)
    
-  // var users = List[User](User("email1@gmx.de","pw1",23,"adsfdescription"),User("email2@gmx.de","pw2"),User("email3@gmx.de","pw3"))
    
   def loginUser(email: String, password:String) : Option[User] = {
      val resultset = runMyQuery(s"SELECT EMAIL as sqlemail, PASSWORD as sqlpassword, AGE as sqlage, DESCRIPTION as sqldescription FROM USERS WHERE USERS.EMAIL='$email' and USERS.PASSWORD='$password'")
@@ -40,11 +39,11 @@ class UserManager @Inject()(db: Database){
      //find out the rowcount
      resultset.last();
      if(resultset.getRow() <1){
-       return Option.empty
+       return null;
      }
      else if(resultset.getRow()>1){
        Logger.debug("apparently email is not primary key in database, an email request returned more than one result.")
-       return Option.empty;
+       return null;
      }
      else{
        val email = resultset.getString("sqlemail");
@@ -58,10 +57,10 @@ class UserManager @Inject()(db: Database){
    
   def signUp(email: String, password: String): Option[User] = {
     if(password.isEmpty()){
-      return null
+      return null;
     }
     if(getUserByEmail(email).isDefined){
-     return null
+     return null;
     }
     val resultset = runMyUpdate(s"INSERT INTO USERS(EMAIL,PASSWORD,AGE,DESCRIPTION) VALUES ('$email','$password',NULL,NULL)")
     return getUserByEmail(email);

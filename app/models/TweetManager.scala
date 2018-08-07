@@ -46,7 +46,7 @@ class TweetManager @Inject() (userManager:UserManager, db: Database){
   }
   
   def getTweetChain(tweetID : Int) : Option[Tweet]={
-    if(tweetID==null || tweetID.equals("NULL")){
+    if(tweetID.equals("NULL")){
       return Option.empty;
     }
     val resultset = userManager.runMyQuery(

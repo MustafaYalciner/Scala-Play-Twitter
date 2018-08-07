@@ -31,6 +31,7 @@ val signupForm = Form(
           "email" -> text,
           "password" -> text)
           verifying("email adress already used", result => result match{
+            case("",password) => false
             case(email, password) => userManager.signUp(email, password).isDefined}))
           
 

@@ -5,7 +5,6 @@ MySQL is used to access the local database.
 This project includes:
 * A Login and Signup mechanism using the Session of the browser.
 * A newsfeed
-* Follow other users whose Tweets will be shown in the newsfeed
 
 To run this project, just clone the repository and type 'sbt run' in the terminal at the root directory.
 Then open a browser and go to http://localhost:9000 
